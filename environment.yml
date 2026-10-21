@@ -1,0 +1,7 @@
+name: contact_aware_tdmpc2
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+# Install PyTorch, requirements.txt, and SOFA as documented in README.md.

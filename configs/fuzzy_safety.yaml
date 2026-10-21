@@ -1,0 +1,41 @@
+force_reference_N:
+  Q75: 1.0855235286650953
+  Q90: 2.1265156799878246
+  Q95: 3.685331040756903
+  Q99: 7.466568793559142
+F_lim_N: 3.685331040756903  # nominal simulation reference, not clinical
+clearance_reference_normalized:
+  Q25: -0.6142929047346115
+  Q50: -0.03466621972620487
+  Q75: 0.08420414663851261
+clearance_scalar: min(observation[14], observation[15], observation[16])
+input_memberships:
+  current_force: {LOW: [left_shoulder, Q75, Q90], MEDIUM: [triangle, Q75, Q95, Q99], HIGH: [right_shoulder, Q90, Q95]}
+  predicted_force: {LOW: [left_shoulder, Q75, Q90], MEDIUM: [triangle, Q75, Q95, Q99], HIGH: [right_shoulder, Q90, Q95]}
+  clearance: {SMALL: [left_shoulder, Q25, Q50], MEDIUM: [triangle, Q25, Q50, Q75], LARGE: [right_shoulder, Q50, Q75]}
+output:
+  NONE: {shape: trapezoid, points: [0.0, 0.0, 0.1, 0.25]}
+  MILD: {shape: triangle, points: [0.1, 0.4, 0.7]}
+  STRONG: {shape: trapezoid, points: [0.55, 0.75, 1.0, 1.0]}
+inference:
+  method: Mamdani
+  AND: min
+  OR: max
+  implication: min
+  aggregation: max
+  defuzzification: centroid
+  rho_grid: {start: 0.0, stop: 1.0, step: 0.001, point_count: 1001}
+rho_0: 0.10
+rho_eff_mapping: "0 if rho <= rho_0 else clip((rho-rho_0)/(1-rho_0), 0, 1)"
+action_mapping: "attenuate positive insertion only; preserve nonpositive insertion and all rotation"
+rules:
+  - {id: R1, antecedents: [[current, LOW], [predicted, LOW], [clearance, LARGE]], consequent: NONE}
+  - {id: R2, antecedents: [[current, LOW], [predicted, LOW], [clearance, MEDIUM]], consequent: MILD}
+  - {id: R3, antecedents: [[predicted, MEDIUM]], consequent: MILD}
+  - {id: R4, antecedents: [[current, MEDIUM], [predicted, LOW]], consequent: MILD}
+  - {id: R5, antecedents: [[predicted, HIGH]], consequent: STRONG}
+  - {id: R6, antecedents: [[current, HIGH]], consequent: STRONG}
+  - {id: R7, antecedents: [[current, MEDIUM], [predicted, MEDIUM]], consequent: STRONG}
+  - {id: R8, antecedents: [[clearance, SMALL], [predicted, MEDIUM]], consequent: STRONG}
+  - {id: R9, antecedents: [[clearance, SMALL], [predicted, HIGH]], consequent: STRONG}
+  - {id: R10, antecedents: [[clearance, SMALL], [current, LOW], [predicted, LOW]], consequent: MILD}

@@ -1,0 +1,14 @@
+# Tested Python 3.10 runtime; install the CUDA-matched PyTorch wheel first.
+torch==2.7.1
+numpy==1.24.4
+scipy==1.15.3
+gymnasium==0.29.1
+PyYAML==6.0.3
+pillow==12.3.0
+scikit-image==0.25.2
+pyvista==0.48.4
+meshio==5.3.5
+PyOpenGL==3.1.10
+pygame==2.6.1
+matplotlib==3.10.9
+opencv-python==5.0.0.93

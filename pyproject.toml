@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contact-aware-tdmpc2"
+version = "0.1.0"
+description = "Frozen G13/G16.1 inference and simulator adapter for contact-aware endovascular navigation"
+requires-python = ">=3.10,<3.11"
+dynamic = ["dependencies"]
+
+[tool.setuptools]
+packages = {find = {include = ["contact_aware_tdmpc2*", "eve*"]}}
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.package-data]
+eve = ["intervention/simulation/util/*.stl", "visualisation/meshes/*.stl"]
+contact_aware_tdmpc2 = ["configs/*.yaml"]

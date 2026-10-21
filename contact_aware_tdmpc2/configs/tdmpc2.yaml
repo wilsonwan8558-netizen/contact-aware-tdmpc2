@@ -1,0 +1,41 @@
+checkpoint:
+  filename: step_260000.pt
+  sha256: b2bba8be2e2722886c20952b15712deaa31ab612825999f1b3469a34fd6ef7be
+  algorithm: Geometry-Force-TD-MPC2
+  format_version: 2
+  total_env_steps: 260000
+observation_dim: 22
+action_dim: 2
+model:
+  latent_dim: 256
+  enc_dim: 256
+  mlp_dim: 256
+  num_enc_layers: 2
+  simnorm_dim: 8
+  num_q: 5
+  dropout: 0.01
+  num_bins: 101
+  vmin: -10.0
+  vmax: 10.0
+  log_std_min: -10.0
+  log_std_max: 2.0
+agent_initialization:
+  horizon: 3
+  lr: 0.0003
+  enc_lr_scale: 0.3
+  lambda_force_train: 0.5
+  tau: 0.01
+  discount_denom: 5.0
+  discount_min: 0.95
+  discount_max: 0.995
+  episodic: true
+planning:
+  mpc: true
+  horizon: 3
+  iterations: 6
+  num_samples: 512
+  num_elites: 64
+  num_pi_trajs: 24
+  min_std: 0.05
+  max_std: 2.0
+  temperature: 0.5

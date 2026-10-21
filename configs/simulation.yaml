@@ -1,0 +1,29 @@
+environment:
+  max_episode_steps: 200
+  vessel_seed: 30
+  image_frequency: 7.5
+  target_threshold: 5.0
+  target_branches: [lcca, rcca, lsa, rsa, bct, co]
+  friction: 0.001
+solver:
+  type: GenericConstraintSolver
+  resolutionMethod: ProjectedGaussSeidel
+  tolerance: 0.0001
+  maxIterations: 2000
+  computeConstraintForces: true
+  contact_response: FrictionContactConstraint
+  mu: 0.001
+  dt_s: 0.006
+action:
+  normalized_order: [insertion, rotation]
+  insertion_velocity_limit_mm_s: 50.0
+  rotation_velocity_limit_rad_s: 3.14
+  scaling: "symmetric linear map from [-1,1] to device velocity limits"
+control:
+  rl_interval_s: 0.13333333333333333
+  sofa_substeps_per_step: 22
+force:
+  distal_length_mm: 3.0
+  substep: "norm(sum(J_c^T lambda_c / dt)) for contacts at most 3 mm from tip"
+  rl_step: "max of all 22 SOFA substep distal forces"
+  units: nominal simulation N
