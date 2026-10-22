@@ -15,6 +15,10 @@ from .geometry_force import G13Agent
 ROOT = Path(__file__).resolve().parents[2]
 
 
+class MissingCheckpointError(RuntimeError):
+    """The approved, intentionally unbundled G13 checkpoint is unavailable."""
+
+
 def _config_path(name: str) -> Path:
     source = ROOT / "configs" / name
     return source if source.is_file() else Path(__file__).resolve().parents[1] / "configs" / name
@@ -29,10 +33,18 @@ def set_seed(seed: int) -> None:
 
 
 def load_g13(checkpoint_path: str | Path, *, device: str = "cuda:0") -> tuple[G13Agent, dict]:
-    if device.startswith("cuda") and not torch.cuda.is_available():
-        raise RuntimeError("CUDA was requested but is unavailable")
     path = Path(checkpoint_path).expanduser().resolve()
     frozen = yaml.safe_load(_config_path("tdmpc2.yaml").read_text())
+    if not path.is_file():
+        raise MissingCheckpointError(
+            "The G13 checkpoint is intentionally not distributed in Git. "
+            f"Expected {frozen['checkpoint']['filename']} with SHA256 "
+            f"{frozen['checkpoint']['sha256']}. Obtain the approved file and use "
+            "--checkpoint /path/to/step_260000.pt. "
+            f"Missing file: {path}"
+        )
+    if device.startswith("cuda") and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is unavailable")
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if digest != frozen["checkpoint"]["sha256"]:
         raise RuntimeError("G13 checkpoint SHA256 mismatch")

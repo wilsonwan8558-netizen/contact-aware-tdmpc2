@@ -36,6 +36,7 @@ python -m pip install torch==2.7.1+cu128 --index-url https://download.pytorch.or
 python -m pip install -r requirements-dev.txt
 python -m pip install -e .
 python -c "import torch, eve, Sofa; print(torch.__version__, torch.cuda.is_available(), eve.__file__)"
+python scripts/check_environment.py
 ```
 
 The tested research environment was Python 3.10, PyTorch 2.7.1+cu128,
@@ -43,8 +44,13 @@ CUDA 12.8, NumPy 1.24.4, Gymnasium 0.29.1, and SOFA 23.06-compatible
 SofaPython3/BeamAdapter. SOFA and its plugin paths (`SOFA_ROOT`,
 `SOFAPYTHON3_ROOT`) are **system dependencies** and are not installed by pip.
 The included `eve` package must resolve to this repository; the demos assert
-the Generic scene before stepping. No `PYTHONPATH` to the research repository
-is needed. See [force extraction](docs/FORCE_EXTRACTION.md).
+the Generic scene before stepping. Collaborator-facing entrypoints now fail
+fast if `eve` resolves to an older editable stEVE checkout. The read-only
+`check_environment.py` reports PASS/FAIL/WARN for Python, PyTorch/CUDA, SOFA,
+BeamAdapter, and the bundled `eve` origin; optionally pass
+`--checkpoint /path/to/step_260000.pt` to verify the approved file and SHA256.
+No `PYTHONPATH` to the research repository is needed. The script does not
+install or modify dependencies. See [force extraction](docs/FORCE_EXTRACTION.md).
 
 ## Checkpoint
 
@@ -82,6 +88,10 @@ force reconstruction, G16.1 fuzzy filter, and physical-interface contracts.
 constants (mirrored as package data for wheel installs); `scripts/` and
 `examples/` show usage; `tests/` checks invariants and mirror equality.
 No G-series logs, training runs, or historical checkpoints are included.
+Frozen numerical values in implementation code are authoritative; the root
+YAML and packaged YAML are reviewed mirrors. Startup checks reject drift in
+the fuzzy rule/quantile/deadband configuration and Generic-SOFA timing/friction
+configuration rather than tuning the frozen method from arbitrary YAML.
 
 ## Physical Phantom Integration
 

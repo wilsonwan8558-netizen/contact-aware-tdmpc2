@@ -20,13 +20,8 @@ class RobotInterface(ABC):
         """Return target in the same frame as tracking points."""
 
     @abstractmethod
-    def get_force(self) -> float:
-        """Return current validated distal-force proxy in calibrated units."""
-
-    @abstractmethod
     def send_action(self, insertion_velocity: float, rotation_velocity: float) -> None:
         """Send bounded physical velocities; adapter owns interlocks and watchdog."""
 
-    @abstractmethod
     def reset(self) -> None:
-        """Reset robot-side state, if supported; never infer simulator reset semantics."""
+        """Optional robot-side reset; never infer simulator reset semantics."""

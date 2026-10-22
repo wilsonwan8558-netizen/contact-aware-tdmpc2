@@ -5,6 +5,12 @@ nonnegative current-force signal. The platform team should implement
 `interfaces/robot_interface.py`, `interfaces/observation_adapter.py`, and
 `interfaces/force_interface.py`; TD-MPC2 internals and fuzzy rules should
 remain frozen until a separate validation protocol authorizes changes.
+`RobotInterface` supplies tracking points, device rotation, target, bounded
+action delivery, and optional reset. It does **not** acquire force.
+`ForceInterface.read_force()` is an independent calibrated measurement source;
+the shadow example accepts `robot` and `force_interface` separately. A force
+sensor, proximal-force estimator, or motor-current estimator may implement it
+after separate calibration and validation.
 
 | Algorithm component | Current simulation source | Physical platform requirement |
 |---|---|---|
@@ -40,3 +46,6 @@ normalization on held-out phantom trajectories. Then validate action limits,
 watchdogs, emergency stop, and force measurement independently before any
 closed-loop phantom run. Human supervision and institution-approved hardware
 safety processes are required; this repository does not provide them.
+Run `python scripts/check_environment.py` in the installed environment before
+simulation work; the bundled-`eve` origin check rejects an older editable
+stEVE import. An optional `--checkpoint` verifies the approved file's SHA256.

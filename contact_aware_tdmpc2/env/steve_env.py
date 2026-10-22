@@ -17,6 +17,8 @@ import numpy as np
 
 import eve
 
+from ..runtime_checks import FROZEN_SOFA_FRICTION
+
 
 OBSERVATION_KEYS: Tuple[str, ...] = ("position", "target", "rotation")
 
@@ -52,7 +54,7 @@ class StEVEEnv(gym.Env[np.ndarray, np.ndarray]):
             "bct",
             "co",
         ),
-        friction: float = 0.001,
+        friction: float = FROZEN_SOFA_FRICTION,
         render_mode: Optional[str] = None,
         display_size: Tuple[int, int] = (600, 860),
     ) -> None:

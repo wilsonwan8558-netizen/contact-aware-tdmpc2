@@ -7,10 +7,13 @@ from contact_aware_tdmpc2.interfaces.observation_adapter import assemble_observa
 def test_order_and_shape():
     assert OBSERVATION_DIM == 22
     assert len(OBSERVATION_NAMES) == len(set(OBSERVATION_NAMES)) == 22
-    assert OBSERVATION_NAMES[10:14] == (
-        "target_x", "target_y", "sin_device_rotation", "cos_device_rotation")
-    assert OBSERVATION_NAMES[14:17] == (
-        "d0_normalized", "d1_normalized", "d2_normalized")
+    assert OBSERVATION_NAMES == (
+        "p0_x", "p0_y", "p1_x", "p1_y", "p2_x", "p2_y", "p3_x", "p3_y",
+        "p4_x", "p4_y", "target_x", "target_y", "sin_device_rotation",
+        "cos_device_rotation", "d0_normalized", "d1_normalized",
+        "d2_normalized", "sin_delta_theta", "cos_delta_theta",
+        "kappa_distal_normalized", "r_local_normalized", "direction_valid",
+    )
     base = np.arange(14, dtype=np.float32)
     geometry = np.arange(14, 22, dtype=np.float32)
     result = assemble_observation(base, geometry)

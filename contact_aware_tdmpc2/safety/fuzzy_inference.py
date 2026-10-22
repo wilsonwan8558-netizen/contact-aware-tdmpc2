@@ -7,6 +7,9 @@ from pathlib import Path
 import numpy as np
 import yaml
 
+from ..runtime_checks import assert_fuzzy_config
+from .safety_filter import RHO_0
+
 
 def left_shoulder(x: float, flat_to: float, zero_at: float) -> float:
     if not flat_to < zero_at:
@@ -53,6 +56,9 @@ def triangle_grid(grid: np.ndarray, points: list[float]) -> np.ndarray:
 class FrozenFuzzyRisk:
     def __init__(self, config_path: Path):
         self.membership = yaml.safe_load(Path(config_path).read_text())
+        assert_fuzzy_config(self.membership)
+        if self.membership["rho_0"] != RHO_0:
+            raise RuntimeError("Frozen G16.1 deadband implementation/config mismatch")
         self.rules = self.membership["rules"]
         inference = self.membership["inference"]
         if (inference["method"] != "Mamdani" or inference["AND"] != "min"

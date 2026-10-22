@@ -15,10 +15,12 @@
    `python scripts/run_fuzzy_safety_demo.py --checkpoint /path/to/step_260000.pt`.
 6. **Physical files to implement:** `contact_aware_tdmpc2/interfaces/robot_interface.py`,
    `observation_adapter.py`, and `force_interface.py`; use the non-actuating
-   `examples/phantom_integration_skeleton.py` as a starting boundary.
-7. **Required robot signals:** five ordered tracking points, target,
-   device rotation, registered vessel centerline/radii, a validated force
-   signal, and timed insertion/rotation command feedback.
+   `examples/phantom_integration_skeleton.py` as a starting boundary. Pass the
+   robot and an independent force interface to `shadow_step()`.
+7. **Required signals:** the robot supplies five ordered tracking points,
+   target, device rotation, registered vessel centerline/radii, and timed
+   insertion/rotation command feedback; the separate force interface supplies
+   a validated force estimate via `read_force()`.
 8. **Simulation-specific assumptions:** Generic-SOFA constraint forces,
    distal 3-mm reaction, episode-specific 2-D normalization, synthetic vessel
    geometry, ±50 mm/s and ±3.14 rad/s action mapping, 7.5-Hz control.
@@ -32,3 +34,6 @@
 Do not share with Weibo until Wilson and Prof. Sun approve license and
 redistribution, checkpoint transfer, third-party notices, and physical-safety
 scope. No remote or public repository is created by this handoff.
+Before simulation, run `python scripts/check_environment.py` (optionally with
+`--checkpoint /path/to/step_260000.pt`) to check SOFA, CUDA, the bundled `eve`
+origin, and checkpoint hash. Its checks do not replace physical calibration.

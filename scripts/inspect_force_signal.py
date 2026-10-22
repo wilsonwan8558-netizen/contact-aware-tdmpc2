@@ -14,6 +14,8 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=1000)
     args = parser.parse_args()
     import numpy as np
+    from contact_aware_tdmpc2.runtime_checks import assert_bundled_eve_origin
+    assert_bundled_eve_origin()
     from contact_aware_tdmpc2.env.g13_env import make_g13_env
     from contact_aware_tdmpc2.env.scene_check import assert_generic_scene
     env = make_g13_env()

@@ -5,9 +5,10 @@ from __future__ import annotations
 import gymnasium as gym
 import numpy as np
 
-from .steve_env import make_steve_env
+from .steve_env import FROZEN_SOFA_FRICTION, make_steve_env
 from .observation import GeometryFeatureExtractor, OBSERVATION_DIM
-from .force_extraction import DistalForceMonitor
+from .force_extraction import CONTROL_SUBSTEPS, SOFA_DT_S, DistalForceMonitor
+from ..runtime_checks import assert_bundled_eve_origin, assert_simulation_config
 
 
 class GeometryForceEnv(gym.Wrapper):
@@ -19,6 +20,12 @@ class GeometryForceEnv(gym.Wrapper):
     """
 
     def __init__(self, config=None) -> None:
+        assert_bundled_eve_origin()
+        assert_simulation_config(
+            implementation_dt_s=SOFA_DT_S,
+            implementation_friction=FROZEN_SOFA_FRICTION,
+            implementation_substeps=CONTROL_SUBSTEPS,
+        )
         base = make_steve_env(config)
         super().__init__(base)
         self.observation_space = gym.spaces.Box(

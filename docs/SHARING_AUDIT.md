@@ -2,7 +2,7 @@
 
 This is a local-review package, not an approved public release.
 
-Checks performed before the proposed initial commit:
+Historical checks performed before the initial commit (`718a68c`):
 
 - Frozen checkpoint SHA256 matched the expected G13 step-260000 hash. Its
   metadata reported format version 2, algorithm `Geometry-Force-TD-MPC2`,
@@ -27,10 +27,10 @@ Checks performed before the proposed initial commit:
   password literals, or access-token literals.
 - The file/size scan found no copied checkpoint, experiment CSV, large log,
   temporary rollout, video, or source file over 5 MB. Generated caches are
-  excluded by `.gitignore` and are not committed. The release stages 208 files:
+  excluded by `.gitignore` and were not committed. The initial release tracked 208 files:
   143 attributed stEVE runtime files (141 Python sources, 2 small mesh assets)
   and 65 controller/config/documentation/test/notice files. The largest
-  staged file is a 223-kB mesh asset.
+  tracked file was a 223-kB mesh asset.
 - Third-party source notices are preserved under `third_party/` and explained
   in `THIRD_PARTY_NOTICES.md`. The root license is intentionally pending
   institutional approval; **redistribution remains blocked** until approved.

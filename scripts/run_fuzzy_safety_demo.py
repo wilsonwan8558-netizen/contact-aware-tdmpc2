@@ -15,10 +15,16 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=1000)
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
+    from contact_aware_tdmpc2.runtime_checks import assert_bundled_eve_origin
+    assert_bundled_eve_origin()
+    from contact_aware_tdmpc2.tdmpc2.checkpoint import MissingCheckpointError
     from contact_aware_tdmpc2 import ContactAwareController
     from contact_aware_tdmpc2.demo import run_episode
     from contact_aware_tdmpc2.env.g13_env import make_g13_env
-    controller = ContactAwareController(args.checkpoint, device=args.device)
+    try:
+        controller = ContactAwareController(args.checkpoint, device=args.device)
+    except MissingCheckpointError as exc:
+        parser.exit(2, f"error: {exc}\n")
     env = make_g13_env(controller.config["environment"])
     try:
         print(run_episode(env, controller, args.seed, safety_enabled=True), flush=True)
