@@ -11,4 +11,6 @@ meshio==5.3.5
 PyOpenGL==3.1.10
 pygame==2.6.1
 matplotlib==3.10.9
-opencv-python==5.0.0.93
+# Optional visualization/video dependency.  4.8.1.78 supports the frozen
+# NumPy 1.24.4 runtime on Python 3.10; OpenCV is not imported by G13 training.
+opencv-python==4.8.1.78

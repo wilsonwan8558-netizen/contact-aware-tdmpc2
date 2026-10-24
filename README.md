@@ -35,9 +35,17 @@ conda activate contact_aware_tdmpc2
 python -m pip install torch==2.7.1+cu128 --index-url https://download.pytorch.org/whl/cu128
 python -m pip install -r requirements-dev.txt
 python -m pip install -e .
+export SOFA_ROOT=/path/to/SOFA/install
+export SOFAPYTHON3_ROOT=$SOFA_ROOT/plugins/SofaPython3
+export PYTHONPATH="$PWD:$SOFAPYTHON3_ROOT/lib/python3/site-packages"
+export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$SOFA_ROOT/lib:$SOFAPYTHON3_ROOT/lib:$LD_LIBRARY_PATH"
 python -c "import torch, eve, Sofa; print(torch.__version__, torch.cuda.is_available(), eve.__file__)"
 python scripts/check_environment.py
 ```
+
+Replace `/path/to/SOFA/install` with your own SOFA installation.  For G13
+training/retraining, first run the original vessel sanity check and follow
+[TRAINING_README.md](TRAINING_README.md).
 
 The tested research environment was Python 3.10, PyTorch 2.7.1+cu128,
 CUDA 12.8, NumPy 1.24.4, Gymnasium 0.29.1, and SOFA 23.06-compatible
@@ -115,3 +123,5 @@ redistribute until licensing is finalized.** See [third-party notices](THIRD_PAR
 ## Training / Retraining on a New Vessel
 
 The shared G13 260k checkpoint was trained on one vessel geometry and may not generalize to a substantially different phantom. A local G13 training pipeline is available on the dedicated training branch; it preserves the model/force-head family while allowing an explicit vessel scene. Start with [Training](docs/TRAINING.md) and [Retraining on a New Vessel](docs/RETRAIN_ON_NEW_VESSEL.md). The existing G16.1 filter is unchanged.
+
+For the G13 Geometry-Force-TD-MPC2 training workflow, scene validation, checkpoint resumption, and collaborator commands, see [TRAINING_README.md](TRAINING_README.md).
