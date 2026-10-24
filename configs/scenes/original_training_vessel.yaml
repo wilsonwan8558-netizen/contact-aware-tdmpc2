@@ -1,0 +1,10 @@
+scene_version: 1
+kind: original_aortic_arch
+vessel_seed: 30
+image_rot_zx_deg: [20.0, 5.0]
+image_center_mm: [0.0, 0.0, 0.0]
+field_of_view_mm: null
+target:
+  mode: centerline_random
+  branches: [lcca, rcca, lsa, rsa, bct, co]
+  threshold_mm: 5.0

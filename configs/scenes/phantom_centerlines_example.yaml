@@ -1,0 +1,8 @@
+# Example schema only; replace with measured phantom centerlines/radii in mm.
+branches:
+  - name: branch_a
+    coordinates_mm:
+      - [0.0, 0.0, 0.0]
+      - [0.0, 10.0, 0.0]
+      - [1.0, 20.0, 0.0]
+    radii_mm: [3.0, 3.0, 2.5]

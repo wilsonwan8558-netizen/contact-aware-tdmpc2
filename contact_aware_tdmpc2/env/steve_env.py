@@ -55,6 +55,7 @@ class StEVEEnv(gym.Env[np.ndarray, np.ndarray]):
             "co",
         ),
         friction: float = FROZEN_SOFA_FRICTION,
+        scene: Optional[Mapping[str, Any]] = None,
         render_mode: Optional[str] = None,
         display_size: Tuple[int, int] = (600, 860),
     ) -> None:
@@ -70,10 +71,15 @@ class StEVEEnv(gym.Env[np.ndarray, np.ndarray]):
         self.render_mode = render_mode
         self._episode_steps = 0
 
-        vessel_tree = eve.intervention.vesseltree.AorticArch(
-            seed=int(vessel_seed),
-            scaling_xyzd=[1.0, 1.0, 1.0, 0.75],
-        )
+        # The default branch is deliberately identical to the frozen G13
+        # scene. Only an explicit training scene config selects another tree.
+        if scene is None:
+            vessel_tree = eve.intervention.vesseltree.AorticArch(
+                seed=int(vessel_seed), scaling_xyzd=[1.0, 1.0, 1.0, 0.75])
+            projection = {"image_rot_zx": [20, 5]}
+        else:
+            from ..training.scene import build_scene
+            vessel_tree, projection = build_scene(dict(scene))
         device = eve.intervention.device.JShaped()
         simulation = eve.intervention.simulation.SofaBeamAdapter(
             friction=float(friction)
@@ -82,14 +88,15 @@ class StEVEEnv(gym.Env[np.ndarray, np.ndarray]):
             simulation=simulation,
             vessel_tree=vessel_tree,
             image_frequency=float(image_frequency),
-            image_rot_zx=[20, 5],
+            **projection,
         )
-        target = eve.intervention.target.CenterlineRandom(
-            vessel_tree=vessel_tree,
-            fluoroscopy=fluoroscopy,
-            threshold=float(target_threshold),
-            branches=list(target_branches),
-        )
+        if scene is None:
+            target = eve.intervention.target.CenterlineRandom(
+                vessel_tree=vessel_tree, fluoroscopy=fluoroscopy,
+                threshold=float(target_threshold), branches=list(target_branches))
+        else:
+            from ..training.scene import build_target
+            target = build_target(dict(scene), vessel_tree, fluoroscopy)
         intervention = eve.intervention.MonoPlaneStatic(
             vessel_tree=vessel_tree,
             devices=[device],

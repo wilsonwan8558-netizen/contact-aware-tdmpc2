@@ -111,3 +111,7 @@ without independent validation and safety engineering.
 
 License pending collaborator/institutional approval. **Please do not
 redistribute until licensing is finalized.** See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Training / Retraining on a New Vessel
+
+The shared G13 260k checkpoint was trained on one vessel geometry and may not generalize to a substantially different phantom. A local G13 training pipeline is available on the dedicated training branch; it preserves the model/force-head family while allowing an explicit vessel scene. Start with [Training](docs/TRAINING.md) and [Retraining on a New Vessel](docs/RETRAIN_ON_NEW_VESSEL.md). The existing G16.1 filter is unchanged.

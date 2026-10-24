@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "contact-aware-tdmpc2"
 version = "0.1.0"
-description = "Frozen G13/G16.1 inference and simulator adapter for contact-aware endovascular navigation"
+description = "G13 training and frozen G13/G16.1 inference for contact-aware endovascular navigation"
 requires-python = ">=3.10,<3.11"
 dynamic = ["dependencies"]
 

@@ -46,15 +46,23 @@ def load_g13(checkpoint_path: str | Path, *, device: str = "cuda:0") -> tuple[G1
     if device.startswith("cuda") and not torch.cuda.is_available():
         raise RuntimeError("CUDA was requested but is unavailable")
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    if digest != frozen["checkpoint"]["sha256"]:
-        raise RuntimeError("G13 checkpoint SHA256 mismatch")
+    is_frozen = digest == frozen["checkpoint"]["sha256"]
+    if not is_frozen:
+        sidecar = path.with_suffix(path.suffix + ".sha256")
+        tokens = sidecar.read_text(encoding="utf-8").split() if sidecar.is_file() else []
+        if not tokens or tokens[0] != digest:
+            raise RuntimeError("G13 checkpoint SHA256 mismatch; locally trained checkpoints require a matching .pt.sha256 sidecar")
     # This full-state research checkpoint uses pickle. Load only trusted,
     # hash-verified local files; never load an untrusted downloaded pickle.
     checkpoint = torch.load(path, map_location="cpu", weights_only=False)
     expected = frozen["checkpoint"]
-    for key in ("algorithm", "format_version", "total_env_steps"):
+    required_keys = ("algorithm", "format_version", "total_env_steps") if is_frozen else ("algorithm", "format_version")
+    for key in required_keys:
         if checkpoint.get(key) != expected[key]:
             raise RuntimeError(f"G13 checkpoint {key} mismatch")
+    if not is_frozen and (not isinstance(checkpoint.get("total_env_steps"), int)
+                          or checkpoint["total_env_steps"] < 0):
+        raise RuntimeError("Locally trained G13 checkpoint has invalid step metadata")
     if checkpoint.get("observation_dim") != 22:
         raise RuntimeError("G13 checkpoint must use 22-D observation")
     state = checkpoint["agent"]
